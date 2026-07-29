@@ -719,6 +719,8 @@ function responder(eleccion) {
   const fb = document.getElementById('feedback');
   fb.className = `wt-in mt-4 rounded-2xl border ${tono.bg} ${tono.bd} ${tono.tx} p-5 sm:p-6`;
   fb.innerHTML = `
+    ${!acerto ? `<img src="/assets/meme-error.png" alt="" class="w-full rounded-t-2xl -m-5 mb-4 sm:-m-6 sm:mb-4" style="width:calc(100% + 2.5rem)">` : ''}
+    <div class="flex items-center gap-3 flex-wrap">
     <div class="flex items-center gap-3 flex-wrap">
       <span class="${tono.icc}">${ico(tono.ic, 'w-7 h-7')}</span>
       <p class="text-xl font-extrabold">${tono.tit}</p>
