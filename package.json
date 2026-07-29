@@ -1,0 +1,10 @@
+{
+  "name": "phishing-o-real-wisetrack",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Juego de concientizacion en phishing para colaboradores de Wisetrack",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
