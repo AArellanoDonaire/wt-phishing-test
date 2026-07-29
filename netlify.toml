@@ -1,13 +1,13 @@
-functionsDirectory = "C:\\Users\\alfredo.arellano\\Downloads\\phishing-o-real-netlify\\phishing-netlify\\netlify\\functions"
+functionsDirectory = "netlify\\functions"
 functionsDirectoryOrigin = "config-v1"
 headersOrigin = "config"
 redirectsOrigin = "config"
 plugins = []
 
 [build]
-publish = "C:\\Users\\alfredo.arellano\\Downloads\\phishing-o-real-netlify\\phishing-netlify\\public"
+publish = "public"
 publishOrigin = "config"
-functions = "C:\\Users\\alfredo.arellano\\Downloads\\phishing-o-real-netlify\\phishing-netlify\\netlify\\functions"
+functions = "netlify\\functions"
 
   [build.environment]
 
