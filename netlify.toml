@@ -1,0 +1,72 @@
+functionsDirectory = "C:\\Users\\alfredo.arellano\\Downloads\\phishing-o-real-netlify\\phishing-netlify\\netlify\\functions"
+functionsDirectoryOrigin = "config-v1"
+headersOrigin = "config"
+redirectsOrigin = "config"
+plugins = []
+
+[build]
+publish = "C:\\Users\\alfredo.arellano\\Downloads\\phishing-o-real-netlify\\phishing-netlify\\public"
+publishOrigin = "config"
+functions = "C:\\Users\\alfredo.arellano\\Downloads\\phishing-o-real-netlify\\phishing-netlify\\netlify\\functions"
+
+  [build.environment]
+
+  [build.processing]
+
+    [build.processing.css]
+
+    [build.processing.html]
+
+    [build.processing.images]
+
+    [build.processing.js]
+
+  [build.services]
+
+[functions]
+
+  [functions."*"]
+
+[[headers]]
+for = "/*"
+
+  [headers.values]
+  X-Frame-Options = "DENY"
+  X-Content-Type-Options = "nosniff"
+  Referrer-Policy = "no-referrer"
+
+[[redirects]]
+from = "/api/score"
+to = "/.netlify/functions/score"
+status = 200
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/api/ranking"
+to = "/.netlify/functions/ranking"
+status = 200
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
+from = "/api/health"
+to = "/.netlify/functions/health"
+status = 200
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]

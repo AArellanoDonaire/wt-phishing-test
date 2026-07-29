@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" role="img" aria-label="Caíste: hiciste clic en un enlace malicioso">
+  <rect width="600" height="380" fill="#0f172a"/>
+  <g stroke="#1e293b" stroke-width="1">
+    <path d="M0 60h600M0 120h600M0 180h600M0 240h600M0 300h600"/>
+  </g>
+  <!-- anzuelo -->
+  <g transform="translate(300 40)" fill="none" stroke="#67e8f9" stroke-width="9" stroke-linecap="round">
+    <path d="M0 0v96"/>
+    <path d="M0 96c0 46-58 46-58 6 0-26 22-32 34-18"/>
+  </g>
+  <!-- cursor enganchado -->
+  <g transform="translate(232 150) rotate(-12)">
+    <path d="M0 0l0 46 11-11 8 17 9-4-8-17 15-2z" fill="#f8fafc" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/>
+  </g>
+  <text x="300" y="258" text-anchor="middle" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+        font-size="54" font-weight="800" fill="#f8fafc" letter-spacing="1">¡CAÍSTE!</text>
+  <text x="300" y="296" text-anchor="middle" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+        font-size="19" fill="#94a3b8">Hiciste clic sin revisar a dónde llevaba</text>
+  <text x="300" y="336" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace"
+        font-size="15" fill="#67e8f9">pasa el mouse por encima, no hagas clic</text>
+</svg>
