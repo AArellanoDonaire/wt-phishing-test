@@ -13,8 +13,9 @@ function slug(texto) {
     .slice(0, 60);
 }
 
-function autorizado(request, env) {
-  const clave = env.ADMIN_PASSWORD;
+async function autorizado(request, env) {
+  if (!env.ADMIN_PASSWORD) return false;
+  const clave = await env.ADMIN_PASSWORD.get();
   if (!clave) return false;
   const enviada = request.headers.get('x-admin-key') || '';
   return enviada === clave;
@@ -123,7 +124,7 @@ async function listarAdmin(env) {
 }
 
 async function handleAdmin(request, env) {
-  if (!autorizado(request, env)) return Response.json({ error: 'No autorizado' }, { status: 401 });
+  if (!(await autorizado(request, env))) return Response.json({ error: 'No autorizado' }, { status: 401 });
   if (!env.RANKING_KV) return sinBinding();
 
   if (request.method === 'GET') {
