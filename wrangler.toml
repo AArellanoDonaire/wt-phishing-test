@@ -9,3 +9,8 @@ binding = "ASSETS"
 [[kv_namespaces]]
 binding = "RANKING_KV"
 id = "140a8415d8bf4c72a337b802f30456a8"
+
+[[secrets_store_secrets]]
+binding = "ADMIN_PASSWORD"
+store_id = "38011a75a6de4daf955481ec069eb8fd"
+secret_name = "admin-password"
