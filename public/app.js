@@ -164,7 +164,8 @@ const PENALIZAR_CLIC = true;
    2. CONTENIDO
       Campos: id, canal, remitente, email, asunto, cuerpo, adjunto, tipo,
               explicacion, senales[]. Opcionales: avatar, verificado,
-              enlaceTexto + enlaceReal, adjuntoNombre.
+              enlaceTexto + enlaceReal, adjuntoNombre, extraHTML (bloque
+              HTML propio para dar identidad visual al mensaje).
       En `cuerpo` puedes escribir [texto visible](url real) para incrustar
       un enlace que revele su destino al pasar el mouse.
       canal: 'email' | 'sms' | 'whatsapp' | 'llamada' | 'qr'
@@ -200,29 +201,27 @@ const scenarios = [
     ]
   },
   {
-    id: 2, canal: 'qr',
-    remitente: 'Código QR físico', email: 'Restaurante — mesa 12',
-    intro: 'Estás almorzando y el menú de la mesa trae un código QR.',
-    gancho: 'Lo escaneas sin pensarlo, como cualquier otro día.',
-    asunto: 'Menú digital y beneficios',
-    cuerpo: 'Escaneas el QR pegado sobre el menú. En vez de abrir la carta, te lleva a [menu-beneficios.app/instalar](http://menu-beneficios.app/instalar.apk) y te pide instalar una app fuera de la tienda oficial.',
-    adjunto: false, tipo: 'danger',
-    explicacion: 'Quishing: el atacante pega su propio sticker encima del QR legítimo. El QR no se puede leer a simple vista, así que el único control es revisar la URL de destino antes de abrirla y desconfiar de cualquier instalación fuera de App Store o Play Store.',
-    senales: [
-      'El sticker está pegado sobre el material impreso original',
-      'El destino termina en .apk: instalación directa fuera de la tienda',
-      'El dominio no corresponde al restaurante'
-    ]
-  },
-  {
-    id: 3, canal: 'email',
+    id: 2, canal: 'email',
     remitente: 'Google', email: 'no-reply@google.com', avatar: 'G', verificado: true,
     intro: 'Te avisan que tu almacenamiento está por llenarse.',
     gancho: 'Si se llena, dejas de recibir correos. Suena molesto, pero razonable.',
     asunto: 'Tu almacenamiento de Google está al 90%',
-    cuerpo: 'Estás usando 13,9 GB de los 15 GB de tu cuenta. Cuando se llene, dejarás de recibir correos nuevos. Puedes liberar espacio desde la configuración de tu cuenta.',
-    enlaceTexto: 'Administrar almacenamiento',
-    enlaceReal: 'https://one.google.com/storage',
+    hora: '09:14 a. m.',
+    cuerpo: 'Hola: estás usando 13,9 GB de los 15 GB de tu cuenta, entre Gmail, Drive y Fotos. Cuando se llene, dejarás de recibir correos nuevos. Puedes liberar espacio o ampliar tu almacenamiento cuando quieras.',
+    extraHTML: `
+      <div style="margin-top:14px;padding:16px;border:1px solid #e2e8f0;border-radius:12px;background:#fff">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:26px;height:26px;border-radius:50%;background:conic-gradient(#4285F4 0% 25%,#34A853 25% 50%,#FBBC05 50% 75%,#EA4335 75% 100%)"></div>
+          <span style="font-size:13px;color:#5f6368;font-weight:600">13,9 GB de 15 GB usados</span>
+        </div>
+        <div style="height:8px;border-radius:999px;overflow:hidden;background:#e8eaed;display:flex">
+          <div style="width:58%;background:#4285F4"></div>
+          <div style="width:24%;background:#34A853"></div>
+          <div style="width:11%;background:#FBBC05"></div>
+        </div>
+        <a href="#" onclick="clicEnlace(this);return false" data-url="https://one.google.com/storage"
+           style="display:inline-block;margin-top:14px;background:#1a73e8;color:#fff;font-weight:600;font-size:14px;padding:10px 20px;border-radius:20px;text-decoration:none">Administrar almacenamiento</a>
+      </div>`,
     adjunto: false, tipo: 'safe',
     explicacion: 'Legítimo. El dominio del remitente es exactamente google.com, el enlace apunta a un dominio propio de Google, no pide credenciales y no hay urgencia amenazante — solo información sobre tu cuenta.',
     senales: [
@@ -232,40 +231,25 @@ const scenarios = [
     ]
   },
   {
-    id: 4, canal: 'email',
-    remitente: 'YouTube Support', email: 'youtube-support@gmail.com', avatar: 'YT',
-    intro: 'Un correo dice que tu canal será suspendido en 24 horas.',
-    gancho: 'Trae un formulario de apelación adjunto para que lo firmes y lo devuelvas.',
-    asunto: 'Tu canal fue marcado por infracción de copyright',
-    cuerpo: 'Tu cuenta será suspendida en 24 horas por una infracción de derechos de autor. Descarga el formulario de apelación y envíalo firmado para evitar la eliminación permanente de tu canal.',
-    adjunto: true, adjuntoNombre: 'Apelacion_Copyright_YT.docm',
-    tipo: 'danger',
-    explicacion: 'Una empresa nunca envía notificaciones críticas desde una casilla @gmail.com — usa su propio dominio. Además, el adjunto .docm es un documento de Word con macros habilitadas, uno de los vectores de malware más comunes.',
-    senales: [
-      'Remitente @gmail.com haciéndose pasar por una marca',
-      'Extensión .docm: documento con macros ejecutables',
-      'Amenaza con plazo de 24 horas'
-    ]
-  },
-  {
-    id: 5, canal: 'email',
+    id: 3, canal: 'email',
     remitente: 'Crunchyroll Security', email: 'security@crunchyroli.com', avatar: 'CR',
-    intro: 'Alguien habría entrado a tu cuenta desde el otro lado del mundo.',
-    gancho: 'El correo se ve igual a todos los que te ha mandado esta plataforma antes.',
-    asunto: 'Detectamos un inicio de sesión desde Rusia',
-    cuerpo: 'Alguien accedió a tu cuenta desde una ubicación no habitual. Si no fuiste tú, restablece tu contraseña de inmediato.',
-    enlaceTexto: 'Restablecer mi contraseña',
-    enlaceReal: 'https://crunchyroli.com/account/reset',
+    intro: 'Te llega un aviso sobre tu cuenta de streaming.',
+    gancho: 'Dice que cambiaste el correo de tu cuenta hace un momento… pero tú no hiciste nada.',
+    asunto: 'Confirmamos el cambio de correo en tu cuenta',
+    hora: '10:27 p. m.',
+    cuerpo: 'La dirección de correo asociada a tu cuenta fue actualizada hace unos minutos a otra bandeja. Si no fuiste tú, cancela este cambio ahora antes de que se complete y pierdas el acceso.',
+    enlaceTexto: 'Cancelar este cambio',
+    enlaceReal: 'https://crunchyroli.com/account/cancel-change',
     adjunto: false, tipo: 'danger',
-    explicacion: 'Typosquatting. El dominio es crunchyroli.com — falta una "l" respecto de crunchyroll.com. El diseño, el texto y hasta el logo pueden ser copias perfectas; el dominio es lo único que el atacante no puede falsificar.',
+    explicacion: 'Typosquatting. El dominio es crunchyroli.com — falta una "l" respecto de crunchyroll.com. El correo no dice que fuiste tú quien hizo el cambio, así que la urgencia por "cancelarlo" te empuja a iniciar sesión en una página falsa que en realidad captura tu contraseña real.',
     senales: [
       'crunchyroli.com ≠ crunchyroll.com (falta una "l")',
-      'Miedo + ubicación extranjera para forzar el clic',
-      'Te lleva a un formulario de contraseña desde un correo'
+      'Un cambio que tú no autorizaste, con urgencia para "revertirlo"',
+      '"Cancelar" te pide iniciar sesión en vez de mostrar el estado real de tu cuenta'
     ]
   },
   {
-    id: 6, canal: 'email',
+    id: 4, canal: 'email',
     remitente: 'Jira · Wisetrack', email: 'jira@wisetrack.atlassian.net', avatar: 'J', verificado: true,
     intro: 'Te asignaron un ticket y llega la notificación de siempre.',
     gancho: 'Es el mismo correo que ves varias veces por semana.',
@@ -282,7 +266,7 @@ const scenarios = [
     ]
   },
   {
-    id: 7, canal: 'llamada',
+    id: 5, canal: 'llamada',
     remitente: 'Soporte TI Wisetrack', email: '+56 2 2938 4471',
     intro: 'Suena el teléfono y dicen ser de soporte TI.',
     gancho: 'Saben tu nombre, saben que usas VPN y suenan apurados.',
@@ -297,7 +281,7 @@ const scenarios = [
     ]
   },
   {
-    id: 8, canal: 'sms',
+    id: 6, canal: 'sms',
     remitente: 'COPEC', email: '+56 9 6122 8830',
     intro: 'Un SMS te avisa que tus puntos vencen hoy a medianoche.',
     gancho: 'Son 12.400 puntos. Sería una lata perderlos por no alcanzar a canjearlos.',
@@ -312,7 +296,7 @@ const scenarios = [
     ]
   },
   {
-    id: 9, canal: 'email',
+    id: 7, canal: 'email',
     remitente: 'Portal Wisetrack', email: 'no-reply@wisetrack.cl', avatar: 'W', verificado: true,
     intro: 'Acabas de pedir cambiar tu contraseña y llega el código.',
     gancho: 'Lo esperabas hace unos segundos.',
@@ -327,14 +311,35 @@ const scenarios = [
     ]
   },
   {
-    id: 10, canal: 'email',
+    id: 8, canal: 'email',
     remitente: 'Instagram', email: 'security@inst-agram.com', avatar: 'IG',
     intro: 'Instagram te avisa de un acceso que no reconoces.',
     gancho: 'El botón para proteger la cuenta está justo ahí.',
     asunto: 'Intento de inicio de sesión no reconocido',
-    cuerpo: 'Detectamos un intento de acceso desde un dispositivo desconocido. Si no fuiste tú, protege tu cuenta ahora.',
-    enlaceTexto: 'Proteger mi cuenta',
-    enlaceReal: 'https://inst-agram.com/login',
+    hora: '11:52 p. m.',
+    cuerpo: 'Detectamos un intento de acceso a tu cuenta desde un dispositivo desconocido en Bogotá, Colombia. Si no fuiste tú, protege tu cuenta ahora.',
+    extraHTML: `
+      <div style="margin-top:14px;padding:16px;border:1px solid #e2e8f0;border-radius:12px;background:#fafafa;text-align:center">
+        <div style="width:52px;height:52px;margin:0 auto 10px">
+          <svg width="52" height="52" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="igGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#feda75"/>
+                <stop offset="30%" stop-color="#fa7e1e"/>
+                <stop offset="55%" stop-color="#d62976"/>
+                <stop offset="80%" stop-color="#962fbf"/>
+                <stop offset="100%" stop-color="#4f5bd5"/>
+              </linearGradient>
+            </defs>
+            <rect width="48" height="48" rx="12" fill="url(#igGrad)"/>
+            <rect x="12" y="12" width="24" height="24" rx="7" fill="none" stroke="#fff" stroke-width="2.6"/>
+            <circle cx="24" cy="24" r="6.6" fill="none" stroke="#fff" stroke-width="2.6"/>
+            <circle cx="32.5" cy="15.5" r="1.7" fill="#fff"/>
+          </svg>
+        </div>
+        <a href="#" onclick="clicEnlace(this);return false" data-url="https://inst-agram.com/login"
+           style="display:inline-block;margin-top:4px;background:linear-gradient(45deg,#4f5bd5,#962fbf,#d62976,#fa7e1e,#feda75);color:#fff;font-weight:700;font-size:14px;padding:10px 24px;border-radius:8px;text-decoration:none">Proteger mi cuenta</a>
+      </div>`,
     adjunto: false, tipo: 'danger',
     explicacion: 'El guion en "inst-agram" convierte el dominio en uno completamente distinto. Es la misma técnica de Crunchyroll con otra variante: separar la palabra en lugar de quitarle una letra. La página de destino suele ser un clon exacto del login.',
     senales: [
@@ -344,30 +349,71 @@ const scenarios = [
     ]
   },
   {
-    id: 11, canal: 'whatsapp',
-    remitente: 'Cata (contacto guardado)', email: '+56 9 8874 2019', avatar: 'C',
-    intro: 'Una amiga te manda algo que suena increíble.',
-    gancho: 'Viene de un contacto que tienes guardado hace años.',
-    asunto: 'Mensaje reenviado',
-    cuerpo: 'oye mira esto 😳 WhatsApp sacó el "modo espía" para ver los chats de otros, actívalo acá antes que lo saquen: [wa-modoespia.net/activar](http://wa-modoespia.net/activar?ref=wsp)',
+    id: 9, canal: 'email',
+    remitente: 'Talana · Firma Digital', email: 'firma@talana-doc.com', avatar: 'T',
+    intro: 'Te llega la notificación de siempre cuando alguien firma un documento en Talana.',
+    gancho: 'Esta vez es tu propio contrato: dice que está listo para tu firma.',
+    asunto: 'Acción requerida: firma tu contrato de trabajo 2026',
+    hora: '08:03 a. m.',
+    cuerpo: 'Recursos Humanos generó tu nuevo contrato de trabajo en Talana y está pendiente de tu firma digital. Debes completarla antes de las 18:00 de hoy para que tu proceso quede formalizado.',
+    extraHTML: `
+      <div style="margin-top:14px;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden">
+        <div style="background:#fff;padding:16px 20px;text-align:center;border-bottom:1px solid #f1f5f9">
+          <div style="width:40px;height:40px;margin:0 auto 6px">
+            <svg width="40" height="40" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="48" rx="12" fill="#7c6ff0"/>
+              <g fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M24 9c-6 0-10.5 5.2-10.5 12.4 0 6 3.6 10.6 8 12.6"/>
+                <path d="M24 9c6 0 10.5 5.2 10.5 12.4 0 6-3.6 10.6-8 12.6"/>
+                <path d="M19 11.4c-1.7 3-2.7 6.6-2.7 10M29 11.4c1.7 3 2.7 6.6 2.7 10"/>
+                <path d="M24 9v25"/>
+              </g>
+              <path d="M20.5 34h7v2.6a1.8 1.8 0 0 1-1.8 1.8h-3.4a1.8 1.8 0 0 1-1.8-1.8z" fill="#fff"/>
+            </svg>
+          </div>
+          <p style="margin:0;font-weight:800;color:#0f172a;letter-spacing:.02em">talana</p>
+        </div>
+        <div style="padding:18px 20px;background:#fff;text-align:center">
+          <p style="font-weight:800;font-size:16px;color:#0f172a;margin:0 0 6px">Documento pendiente de firma</p>
+          <p style="font-size:13px;color:#64748b;margin:0 0 14px">Contrato de trabajo — vence hoy 18:00</p>
+          <a href="#" onclick="clicEnlace(this);return false" data-url="https://talana-doc.com/firmar?id=88213"
+             style="display:inline-block;background:#0f172a;color:#fff;font-weight:700;font-size:14px;padding:11px 22px;border-radius:10px;text-decoration:none">Firmar documento ahora</a>
+        </div>
+      </div>`,
     adjunto: false, tipo: 'danger',
-    explicacion: 'WhatsApp no tiene ni tendrá una función así — leer conversaciones ajenas es ilegal. El mensaje llega desde un contacto conocido porque su cuenta ya fue comprometida, lo que hace que bajes la guardia. Que venga de alguien que conoces no valida el enlace.',
+    explicacion: 'Suplanta la notificación real de Talana (la misma que ves cuando alguien más firma un documento), pero el dominio es talana-doc.com, no talana.com. El plazo de horas busca que hagas clic y "firmes" sin revisar el remitente ni el destino del botón.',
     senales: [
-      'Promete una función que sería ilegal',
-      'Dominio no relacionado con whatsapp.com y sin HTTPS',
-      'Viene de un contacto real: su cuenta ya cayó'
+      'Dominio talana-doc.com, no el real talana.com',
+      'Plazo de horas para forzar una firma sin verificar',
+      'Un contrato de trabajo no se firma haciendo clic desde un correo sin confirmarlo antes con RR.HH.'
     ]
   },
   {
-    id: 12, canal: 'email',
+    id: 10, canal: 'email',
     remitente: 'Gerencia de Personas — Wisetrack', email: 'personas.wisetrack@outlook.com', avatar: 'GP',
     intro: 'Llega la planilla con los sueldos de toda la empresa.',
     gancho: 'Dice CONFIDENCIAL y pide que no la reenvíes a nadie.',
     asunto: 'CONFIDENCIAL — Reajuste salarial 2026 por colaborador',
-    cuerpo: 'Adjuntamos la planilla con los reajustes aprobados. Es información reservada: revisa solo tu fila y no reenvíes este correo. Si el archivo pide habilitar contenido, acéptalo para ver los datos.',
+    hora: '07:48 a. m.',
+    cuerpo: 'Adjuntamos la planilla con los reajustes aprobados para este ciclo. Es información reservada: revisa solo tu fila y no reenvíes este correo. Si el archivo pide habilitar contenido, acéptalo para ver los datos.',
+    extraHTML: `
+      <div style="margin-top:14px;position:relative;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden">
+        <div style="display:flex;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:11px;color:#64748b;font-family:ui-monospace,monospace">
+          <div style="padding:6px 10px;border-right:1px solid #e2e8f0;background:#eef2f7">A</div>
+          <div style="padding:6px 10px;border-right:1px solid #e2e8f0">Nombre</div>
+          <div style="padding:6px 10px;border-right:1px solid #e2e8f0">Sueldo base</div>
+          <div style="padding:6px 10px">Reajuste</div>
+        </div>
+        <div style="padding:10px;filter:blur(3px);font-size:12px;color:#334155;font-family:ui-monospace,monospace;line-height:1.6">
+          1&nbsp; Contreras, P.&nbsp;&nbsp;&nbsp;&nbsp;$890.000&nbsp;&nbsp;&nbsp;+6,2%<br>
+          2&nbsp; Muñoz, T.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$1.120.000&nbsp;+4,8%<br>
+          3&nbsp; Vidal, R.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$760.000&nbsp;&nbsp;&nbsp;+7,1%
+        </div>
+        <span style="position:absolute;top:14px;right:-30px;transform:rotate(30deg);background:#dc2626;color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;padding:3px 40px">CONFIDENCIAL</span>
+      </div>`,
     adjunto: true, adjuntoNombre: 'Reajuste_Salarial_2026_CONFIDENCIAL.xlsm',
     tipo: 'danger',
-    explicacion: 'El anzuelo perfecto: información que todos quieren ver y que nadie va a comentar con un compañero, justamente porque dice "confidencial". Pero RRHH escribe desde el dominio corporativo, no desde Outlook, y "habilitar contenido" en un .xlsm significa ejecutar macros.',
+    explicacion: 'El anzuelo perfecto: información que todos quieren ver y que nadie va a comentar con un compañero, justamente porque dice "confidencial". Pero RR.HH. escribe desde el dominio corporativo, no desde Outlook, y "habilitar contenido" en un .xlsm significa ejecutar macros.',
     senales: [
       'Área interna escribiendo desde un correo público (@outlook.com)',
       '"Habilitar contenido" = ejecutar macros del atacante',
@@ -412,8 +458,8 @@ function pantallaRegistro() {
       <article class="bg-white rounded-2xl sm:rounded-3xl shadow-lg p-6 sm:p-8">
         <h2 class="text-xl font-bold text-wt-ink">Antes de empezar</h2>
         <p class="text-slate-600 leading-relaxed mt-2">
-          Vas a revisar 12 mensajes reales de tu día a día: correos, SMS, WhatsApp,
-          una llamada y un código QR. En cada uno decides si es legítimo o un ataque.
+          Vas a revisar 10 mensajes reales de tu día a día: correos, un SMS
+          y una llamada. En cada uno decides si es legítimo o un ataque.
         </p>
 
         <div class="mt-5 bg-slate-50 border border-slate-200 rounded-xl p-4">
@@ -531,6 +577,10 @@ function invitacionHTML(s) {
     </div>`;
 }
 
+function extraHTML(s) {
+  return s.extraHTML || '';
+}
+
 function adjuntoHTML(s) {
   if (!s.adjunto) return '';
   return `
@@ -563,6 +613,7 @@ const RENDER = {
       ${invitacionHTML(s)}
       ${enlaceHTML(s)}
       ${adjuntoHTML(s)}
+      ${extraHTML(s)}
       ${s.respondeA ? `<p class="mt-4 pt-3 border-t border-slate-100 text-sm text-slate-500">Responder a <span class="font-mono text-slate-700">${esc(s.respondeA)}</span></p>` : ''}
     </div>`,
 
