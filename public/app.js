@@ -883,7 +883,7 @@ async function guardarYMostrarRanking(datos) {
       try { detalle = JSON.parse(cuerpo).error; } catch { detalle = null; }
       if (!detalle) {
         detalle = res.status === 404
-          ? 'La función /api/score no está publicada. Revisa el enrutamiento en netlify.toml.'
+          ? 'La función /api/score no está publicada. Revisa la carpeta functions/api en el proyecto.'
           : `El servidor respondió ${res.status}. Revisa /api/health y los logs de la función.`;
       }
       throw new Error(detalle);
